@@ -9,7 +9,7 @@ echo VCPKG_ROOT is '%VCPKG_ROOT%'
 
 setlocal enabledelayedexpansion
 
-set BuildDir=_ms_build
+set BuildDir=Build
 
 rem for debug cmake file
 ::rd /s /q %BuildDir%
