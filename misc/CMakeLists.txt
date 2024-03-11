@@ -41,3 +41,12 @@ target_link_libraries(boost_misc
 	
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}  FILES ${sources} ${headers})
 	
+
+add_custom_command(
+	TARGET boost_misc POST_BUILD
+#    OUTPUT out file or may mark SYMBOLIC
+    COMMAND boost_misc -h
+#    DEPENDS any/dependency.file
+    COMMENT "try run"
+    VERBATIM
+)

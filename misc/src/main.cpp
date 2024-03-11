@@ -26,7 +26,7 @@ int main( int argc, char *argv[])
 
     if (vm.count("help")) {
         std::cout << desc << "\n";
-        return 1;
+        return 0;
     }
 
     auto it_a = vm.find("apples");
