@@ -13,7 +13,6 @@ cd %~dp0
 
 set BuildDir=%~dp0Build
 
-
 rem for debug cmake file
 ::rd /s /q %BuildDir%
 

@@ -2,6 +2,9 @@
 # CMake Header and Project Settings
 ##############################################################################
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
+cmake_path(SET CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+
+
 project(boost_asio_first VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
