@@ -1,3 +1,5 @@
 # linux_experiments
 
-The VCPKG and instalet the boost libs are requred
+The VCPKG requred
+then run from repo root dir
+`vcpkg install`

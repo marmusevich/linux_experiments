@@ -9,7 +9,10 @@ echo VCPKG_ROOT is '%VCPKG_ROOT%'
 
 setlocal enabledelayedexpansion
 
-set BuildDir=Build
+:: set path in case script runs outside contained dir
+cd %~dp0
+
+set BuildDir=%~dp0\Build
 
 rem for debug cmake file
 ::rd /s /q %BuildDir%
