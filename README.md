@@ -1,8 +1,8 @@
 # linux_experiments
 
-The installed libs via VCPKG requred (samething like `vcpkg install boost gtest'): 
--boost
--gtest
+The installed libs via VCPKG requred (samething like `vcpkg install boost gtest`): 
+- boost
+- gtest
 
 
 
