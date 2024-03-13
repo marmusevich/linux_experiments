@@ -4,15 +4,24 @@
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
 cmake_path(SET CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
+# [2024-03] try static - it doesn't work
+set(VCPKG_LIBRARY_LINKAGE "static" CACHE STRING "")
+
 project(boost_misc VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
 set(Boost_NO_WARN_NEW_VERSIONS 1)
-find_package(Boost REQUIRED
-	COMPONENTS program_options
+
+# [2024-03] try static - it doesn't work
+set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_STATIC_RUNTIME ON)
+
+find_package(Boost REQUIRED COMPONENTS 
+	program_options
 )  
 
 if (Boost_FOUND)
