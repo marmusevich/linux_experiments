@@ -14,7 +14,7 @@ cd %~dp0
 set BuildDir=%~dp0Build
 
 rem for debug cmake file
-rd /s /q %BuildDir%
+::rd /s /q %BuildDir%
 
 mkdir %BuildDir%
 cmake -G "Visual Studio 17" -B %BuildDir% 
