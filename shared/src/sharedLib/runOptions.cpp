@@ -1,6 +1,7 @@
 //see  https://www.boost.org/doc/libs/1_83_0/doc/html/program_options.html
 
 #include "sharedLib/runOptions.h"
+#include "sharedLib/logger.h"
 
 #include <iostream>
 #include <filesystem>
@@ -46,12 +47,6 @@ namespace NRunOptions
 				std::cout << desc << "\n";
 			};
 
-		//if (argc == 1)
-		//{
-		//	fnPrintHelp(true);
-		//	return std::nullopt;
-		//}
-
 		po::variables_map vm;
 		try
 		{
@@ -61,7 +56,7 @@ namespace NRunOptions
 					bool isCfgEx = fs::exists(filename, ec);
 					if (ec)
 					{
-						std::cerr << "Error occuret by acces to config file'" << filename
+						LOG_ERROR << "Error occuret by acces to config file'" << filename
 							<< "' ( cat [" << ec.category().name() /*<< " - " << ec.category().message()*/ << "]\n"
 							<< ec.value() << " - " << ec.message() << ")\n";
 					}
@@ -75,7 +70,7 @@ namespace NRunOptions
 						}
 						catch (const po::reading_file& e)
 						{
-							std::cerr << "Error occuret by parsing config file'" << filename << "' (" << e.what() << ")\n";
+							LOG_ERROR << "Error occuret by parsing config file'" << filename << "' (" << e.what() << ")\n";
 						}
 					}
 					return false;
@@ -109,8 +104,7 @@ namespace NRunOptions
 		}
 		catch (const std::exception& e)
 		{
-			//todo log error
-			std::cerr << "Error occuret by parsing param (" << e.what() << ")\n";
+			LOG_ERROR << "Error occuret by parsing param (" << e.what() << ")\n";
 
 			fnPrintHelp();
 		}

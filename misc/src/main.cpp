@@ -1,8 +1,8 @@
 #include "sharedLib/runOptions.h"
-
+#include "sharedLib/logger.h"
 
 //---
-#include <iostream>
+//#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -10,11 +10,11 @@ int main(int argc, char* argv[])
 
 	if (opt)
 	{
-		std::cout << *opt << "\n";
+		LOG << *opt << "\n";
 	}
 	else
 	{
-			std::cout << "NO OPT SET\n";
+		LOG_WARNING << "NO OPT SET\n";
 	}
 
 	return 0;

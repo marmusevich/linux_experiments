@@ -22,10 +22,16 @@ set(Boost_NO_WARN_NEW_VERSIONS 1)
 ##set(Boost_USE_STATIC_RUNTIME ON)
 find_package(Boost REQUIRED COMPONENTS 
 	program_options
+#    log_setup
+    log
 )  
 if (Boost_FOUND)
-   message(STATUS "           Boost version: ${Boost_VERSION} !!!")
    include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+   
+   message("Boost VERSION: ${Boost_VERSION}")
+   message("Boost INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+   message("Boost Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
+   message("Boost LIBRARIES: ${Boost_LIBRARIES}")   
 endif ()
 ##############################################################################
 
@@ -34,6 +40,8 @@ FILE(GLOB_RECURSE sources "src/*.cpp")
 add_library(sharedLib STATIC ${sources} ${headers})
 
 target_include_directories(sharedLib 
+	PUBLIC 
+		${Boost_INCLUDE_DIRS}
 	PRIVATE 
 		${CMAKE_CURRENT_SOURCE_DIR}/include
 )
@@ -41,6 +49,8 @@ target_include_directories(sharedLib
 target_link_libraries(sharedLib
 	PRIVATE  
 		Boost::program_options
+#        Boost::log_setup
+        Boost::log
 )
 
 #gropped sourse file in IDE by path	

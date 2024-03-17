@@ -1,4 +1,5 @@
 #pragma once
+#define BOOST_LOG_DYN_LINK 1
 
 #include <string>
 #include <optional>
@@ -20,5 +21,4 @@ namespace NRunOptions
 
 	std::optional<sRunOptions> runOptions(int argc, char* argv[]);
 }
-
 
