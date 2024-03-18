@@ -56,3 +56,5 @@ target_link_libraries(sharedLib
 #gropped sourse file in IDE by path	
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}  FILES ${sources} ${headers})
 	
+###########################################################	
+add_subdirectory(test)

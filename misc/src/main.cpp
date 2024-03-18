@@ -6,11 +6,11 @@
 
 int main(int argc, char* argv[])
 {
-	const auto opt = NRunOptions::runOptions(argc, argv);
+	const auto pOpt = NRunOptions::runOptions(argc, argv);
 
-	if (opt)
+	if (pOpt)
 	{
-		LOG << *opt << "\n";
+		LOG << *pOpt << "\n";
 	}
 	else
 	{
