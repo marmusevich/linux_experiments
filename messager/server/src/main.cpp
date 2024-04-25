@@ -1,79 +1,137 @@
+//
+// async_tcp_echo_server.cpp
+// ~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 
-
+#include <cstdlib>
 #include <iostream>
-#include <boost/asio.hpp>
+#include <memory>
+#include <utility>
 #include <boost/asio/ts/buffer.hpp>
 #include <boost/asio/ts/internet.hpp>
 
-int main()
+using boost::asio::ip::tcp;
+
+class session
+    : public std::enable_shared_from_this<session>
 {
-#ifdef _WIN32 || _WIN64
-    std::setlocale(LC_ALL, "ru_RU"); //optional - in my win machine instaled rus windows 64
-#endif // DEBUG
-
-
-    namespace asio = boost::asio;
-
-    boost::system::error_code ec;
-    asio::io_context context;
-
-    constexpr char* ADDRES{ "93.184.216.34" };
-    //constexpr char* ADDRES{ "localhost" };
-    //constexpr char* ADDRES{ "127.0.0.1" };
-    //constexpr char* ADDRES{ "www.google.com" };
-
-    asio::ip::tcp::endpoint ad{ asio::ip::make_address(ADDRES, ec), 80 };
-
-    if (ec)
+public:
+    session(tcp::socket socket)
+        : socket_(std::move(socket))
     {
-        std::cout << "Error construct addres '" << ADDRES << "'  <" << ec.message() << "> \n";
-        return 0;
     }
 
-    asio::ip::tcp::socket soc{ context };
-    soc.connect(ad, ec);
-
-    if (!ec)
+    void start()
     {
-        std::cout << "OK\n";
-    }
-    else
-    {
-        std::cout << "Error connect to '" << ADDRES << "'  <"<<ec.message() << "> \n";
-        return 0;
+        do_read();
     }
 
-    if (!soc.is_open())
+private:
+    void do_read()
     {
-        return 0;
+        auto self(shared_from_this());
+        socket_.async_read_some(boost::asio::buffer(data_, max_length),
+            [this, self](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    do_write(length);
+                }
+            });
     }
 
-    const std::string req
+    void do_write(std::size_t length)
     {
-        "GET index.html HTTP/1.1\r\n"
-        "Host: exemple.com\r\n"
-        "Connection: close\r\n\r\n"
-    };
+        std::cout << "to write: " << length << " bytes\n";
+        std::cout << "'" << std::string(data_, length) << "'\n\n";
 
-    soc.write_some(asio::buffer(req.data(), req.size()), ec);
-    std::cout << "write_some  <" << ec.message() << "> \n";
+        auto self(shared_from_this());
+        boost::asio::async_write(socket_, boost::asio::buffer(data_, length),
+            [this, self](boost::system::error_code ec, std::size_t /*length*/)
+            {
+                if (!ec)
+                {
+                    do_read();
+                }
+            });
+    }
 
-    auto bytes = soc.available();
-    std::cout << "bytes: " << bytes << "\n";
+    tcp::socket socket_;
+    enum { max_length = 1024 };
+    char data_[max_length];
+};
 
-    if (bytes > 0)
+class server
+{
+public:
+    server(boost::asio::io_context& io_context, short port)
+        : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)),
+        socket_(io_context)
     {
-        std::vector<char> buf(bytes);
-        auto readed = soc.read_some(asio::buffer(buf.data(), buf.size()), ec);
+        do_accept();
+    }
 
-        std::cout << "read_some readed = "<< readed <<"  <" << ec.message() << "> \n";
+private:
+    void do_accept()
+    {
+        acceptor_.async_accept(socket_,
+            [this](boost::system::error_code ec)
+            {
+                if (!ec)
+                {
+                    std::cout << "on accept: \n";
+                    const auto& l = socket_.local_endpoint();
+                    const auto& r = socket_.remote_endpoint();
+                    std::cout << "  - local_endpoint: "
+                        //<< "" << l.protocol().type()
+                        << "" << l.address()
+                        << " : " << l.port()
+                        << "\n";
+                    std::cout << "  - remote_endpoint: "
+                        //<< "" << l.protocol().type()
+                        << "" << r.address()
+                        << " : " << r.port()
+                        << "\n";
 
-        for (auto c : buf) 
+
+
+                    std::make_shared<session>(std::move(socket_))->start();
+                }
+
+                do_accept();
+            });
+    }
+
+    tcp::acceptor acceptor_;
+    tcp::socket socket_;
+};
+
+int main(int argc, char* argv[])
+{
+    try
+    {
+        if (argc != 2)
         {
-            std::cout << c;
+            std::cerr << "Usage: server <port>\n";
+            return 1;
         }
-            
-        std::cout << "\n";
+
+        boost::asio::io_context io_context;
+
+        server s(io_context, std::atoi(argv[1]));
+
+        std::cout << "Started on " << argv[1] <<" port\n";
+
+        io_context.run();
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << "\n";
     }
 
     return 0;

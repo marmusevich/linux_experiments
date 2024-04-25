@@ -1,79 +1,65 @@
+//
+// blocking_tcp_echo_client.cpp
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 
-
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <boost/asio.hpp>
-#include <boost/asio/ts/buffer.hpp>
-#include <boost/asio/ts/internet.hpp>
 
-int main()
+using boost::asio::ip::tcp;
+
+enum { max_length = 1024 };
+
+int main(int argc, char* argv[])
 {
 #ifdef _WIN32 || _WIN64
     std::setlocale(LC_ALL, "ru_RU"); //optional - in my win machine instaled rus windows 64
 #endif // DEBUG
 
 
-    namespace asio = boost::asio;
 
-    boost::system::error_code ec;
-    asio::io_context context;
-
-    constexpr char* ADDRES{ "93.184.216.34" };
-    //constexpr char* ADDRES{ "localhost" };
-    //constexpr char* ADDRES{ "127.0.0.1" };
-    //constexpr char* ADDRES{ "www.google.com" };
-
-    asio::ip::tcp::endpoint ad{ asio::ip::make_address(ADDRES, ec), 80 };
-
-    if (ec)
+    try
     {
-        std::cout << "Error construct addres '" << ADDRES << "'  <" << ec.message() << "> \n";
-        return 0;
-    }
+        //if (argc != 3)
+        //{
+        //    std::cerr << "Usage: blocking_tcp_echo_client <host> <port>\n";
+        //    return 1;
+        //}
 
-    asio::ip::tcp::socket soc{ context };
-    soc.connect(ad, ec);
+        boost::asio::io_context io_context;
 
-    if (!ec)
-    {
-        std::cout << "OK\n";
-    }
-    else
-    {
-        std::cout << "Error connect to '" << ADDRES << "'  <"<<ec.message() << "> \n";
-        return 0;
-    }
+        tcp::socket s(io_context);
 
-    if (!soc.is_open())
-    {
-        return 0;
-    }
+        tcp::resolver resolver(io_context);
+        //boost::asio::connect(s, resolver.resolve(argv[1], argv[2]));
+        boost::asio::connect(s, resolver.resolve("localhost", "55000"));
 
-    const std::string req
-    {
-        "GET index.html HTTP/1.1\r\n"
-        "Host: exemple.com\r\n"
-        "Connection: close\r\n\r\n"
-    };
-
-    soc.write_some(asio::buffer(req.data(), req.size()), ec);
-    std::cout << "write_some  <" << ec.message() << "> \n";
-
-    auto bytes = soc.available();
-    std::cout << "bytes: " << bytes << "\n";
-
-    if (bytes > 0)
-    {
-        std::vector<char> buf(bytes);
-        auto readed = soc.read_some(asio::buffer(buf.data(), buf.size()), ec);
-
-        std::cout << "read_some readed = "<< readed <<"  <" << ec.message() << "> \n";
-
-        for (auto c : buf) 
+        while (true)
         {
-            std::cout << c;
+            std::cout << "Enter message: ";
+            char request[max_length];
+            std::cin.getline(request, max_length);
+            size_t request_length = std::strlen(request);
+            boost::asio::write(s, boost::asio::buffer(request, request_length));
+
+            char reply[max_length];
+            size_t reply_length = boost::asio::read(s,
+                boost::asio::buffer(reply, request_length));
+            std::cout << "Reply is: ";
+            std::cout.write(reply, reply_length);
+            std::cout << "\n";
         }
-            
-        std::cout << "\n";
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << "\n";
     }
 
     return 0;
