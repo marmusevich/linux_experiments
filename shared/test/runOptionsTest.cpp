@@ -1,13 +1,17 @@
 #include <gtest/gtest.h>
 
+#include <array>
+
 #include "sharedLib/runOptions.h"
 
 
 namespace NRunOptionsTest
 {
+	//std::optional<sRunOptions> runOptions(int argc, char* argv[]);
+
 	TEST(runOptions, emptyParam_returnDefault)
 	{
-		char* argv[] = { "my_own_name_of_executable_file" };
+		const char* argv[] = {"my_own_name_of_executable_file"};
 		const auto pOpt = NRunOptions::runOptions(1, argv);
 		ASSERT_TRUE(pOpt);
 		const auto& opt = *pOpt;
@@ -17,7 +21,7 @@ namespace NRunOptionsTest
 
 	TEST(runOptions, todo_extend_tests)
 	{
-		char* argv[] = { "my_own_name_of_executable_file", "-p", "9999", "-a", "127.0.0.1" };
+		const char* argv[] = { "my_own_name_of_executable_file", "-p", "9999", "-a", "127.0.0.1" };
 		const auto pOpt = NRunOptions::runOptions(5, argv);
 		ASSERT_TRUE(pOpt);
 		const auto& opt = *pOpt;

@@ -13,7 +13,7 @@ namespace //meke local to this cpp
 	namespace po = boost::program_options;
 	namespace fs = std::filesystem;
 
-	constexpr char* DEFIULT_CFG_FILE_NAME = "param.cfg";
+	constexpr char DEFIULT_CFG_FILE_NAME[] = "param.cfg";
 }
 
 namespace NRunOptions
@@ -24,7 +24,7 @@ namespace NRunOptions
 		return os;
 	}
 
-	std::optional<sRunOptions> runOptions(int argc, char* argv[])
+	std::optional<sRunOptions> runOptions(int argc, const char* argv[])
 	{
 		po::options_description desc(
 			std::string("Param to connect or listen\n"

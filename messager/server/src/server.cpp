@@ -47,8 +47,7 @@ private:
 
     void do_write(std::size_t length)
     {
-        std::cout << "to write: " << length << " bytes\n";
-        std::cout << "'" << std::string(data_, length) << "'\n\n";
+        std::cout << "[ " << socket_.remote_endpoint() <<" ] (" << length << " bytes): " << std::string(data_, length) << "\n";
 
         auto self(shared_from_this());
         boost::asio::async_write(socket_, boost::asio::buffer(data_, length),
@@ -85,20 +84,8 @@ private:
                 if (!ec)
                 {
                     std::cout << "on accept: \n";
-                    const auto& l = socket_.local_endpoint();
-                    const auto& r = socket_.remote_endpoint();
-                    std::cout << "  - local_endpoint: "
-                        //<< "" << l.protocol().type()
-                        << "" << l.address()
-                        << " : " << l.port()
-                        << "\n";
-                    std::cout << "  - remote_endpoint: "
-                        //<< "" << l.protocol().type()
-                        << "" << r.address()
-                        << " : " << r.port()
-                        << "\n";
-
-
+                    std::cout << "  - local_endpoint: " << socket_.local_endpoint()  << "\n";
+                    std::cout << "  - remote_endpoint: " << socket_.remote_endpoint() << "\n";
 
                     std::make_shared<session>(std::move(socket_))->start();
                 }
@@ -111,7 +98,7 @@ private:
     tcp::socket socket_;
 };
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
     try
     {

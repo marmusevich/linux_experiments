@@ -4,7 +4,7 @@
 //---
 //#include <iostream>
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
 	const auto pOpt = NRunOptions::runOptions(argc, argv);
 

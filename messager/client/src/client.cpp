@@ -17,9 +17,9 @@ using boost::asio::ip::tcp;
 
 enum { max_length = 1024 };
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
-#ifdef _WIN32 || _WIN64
+#if defined(_WIN32) || defined(_WIN64)
     std::setlocale(LC_ALL, "ru_RU"); //optional - in my win machine instaled rus windows 64
 #endif // DEBUG
 

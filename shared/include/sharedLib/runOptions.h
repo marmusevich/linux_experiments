@@ -19,6 +19,6 @@ namespace NRunOptions
 	};
 
 
-	std::optional<sRunOptions> runOptions(int argc, char* argv[]);
+	std::optional<sRunOptions> runOptions(int argc, const char* argv[]);
 }
 
