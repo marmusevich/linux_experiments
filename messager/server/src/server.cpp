@@ -100,6 +100,10 @@ private:
 
 int main(int argc, const char* argv[])
 {
+#if defined(_WIN32) || defined(_WIN64)
+    std::setlocale(LC_ALL, "ru_RU"); //optional - in my win machine instaled rus windows 64
+#endif // DEBUG
+
     try
     {
         if (argc != 2)

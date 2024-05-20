@@ -3,6 +3,7 @@
 
 #include <string>
 #include <optional>
+#include <span>
 #include <iosfwd> //fwd std::ostream
 
 /*
@@ -18,7 +19,6 @@ namespace NRunOptions
 		friend std::ostream& operator << (std::ostream& os, const sRunOptions& opt);
 	};
 
-
-	std::optional<sRunOptions> runOptions(int argc, const char* argv[]);
+	std::optional<sRunOptions> runOptions(std::span<const char*> arg);
 }
 

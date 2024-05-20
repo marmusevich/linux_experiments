@@ -6,8 +6,6 @@
 
 int main(int argc, const char* argv[])
 {
-	const auto pOpt = NRunOptions::runOptions(argc, argv);
-
 	if (pOpt)
 	{
 		LOG << *pOpt << "\n";

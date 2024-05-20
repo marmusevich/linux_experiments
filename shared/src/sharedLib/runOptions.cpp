@@ -24,7 +24,7 @@ namespace NRunOptions
 		return os;
 	}
 
-	std::optional<sRunOptions> runOptions(int argc, const char* argv[])
+	std::optional<sRunOptions> runOptions(std::span<const char*> arg)
 	{
 		po::options_description desc(
 			std::string("Param to connect or listen\n"
@@ -78,7 +78,7 @@ namespace NRunOptions
 
 			if (!fnParseFile(DEFIULT_CFG_FILE_NAME))
 			{
-				po::store(po::parse_command_line(argc, argv, desc), vm);
+				po::store(po::parse_command_line(arg.size(), arg.data(), desc), vm);
 			}
 			po::notify(vm);
 

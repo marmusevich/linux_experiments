@@ -23,8 +23,6 @@ int main(int argc, const char* argv[])
     std::setlocale(LC_ALL, "ru_RU"); //optional - in my win machine instaled rus windows 64
 #endif // DEBUG
 
-
-
     try
     {
         //if (argc != 3)
