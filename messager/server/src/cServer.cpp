@@ -26,9 +26,9 @@ void cServer::do_accept()
 		{
 			if (!ec)
 			{
-				LOG_TRACE << "on accept: \n";
-				LOG_TRACE << "  - local_endpoint: " << mSocket.local_endpoint()  << "\n";
-				LOG_TRACE << "  - remote_endpoint: " << mSocket.remote_endpoint() << "\n";
+				LOG_TRACE << "on accept:"
+						  << "\n  - local_endpoint: " << mSocket.local_endpoint()
+				          << "\n  - remote_endpoint: " << mSocket.remote_endpoint();
 
 				std::make_shared<cSession>(std::move(mSocket))->start();
 			}

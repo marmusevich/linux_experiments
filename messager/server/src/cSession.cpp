@@ -34,7 +34,7 @@ void cSession::do_read()
 
 void cSession::do_write(std::size_t length)
 {
-	LOG << "[ " << mSocket.remote_endpoint() <<" ] (" << length << " bytes): " << std::string(data_, length) << "\n";
+	LOG << "[ " << mSocket.remote_endpoint() <<" ] (" << length << " bytes): " << std::string(data_, length);
 
 	auto self(shared_from_this());
 	boost::asio::async_write(mSocket, boost::asio::buffer(data_, length),
