@@ -1,19 +1,20 @@
-#include <iostream>
-
 #include <memory>
 
 //#include <utility> //?
+
+
+#include "sharedLib/logger.h"
 
 #include "cServer.h"
 #include "cSession.h"
 
 
-using boost::asio::ip::tcp;
+//using boost::asio::ip::tcp;
 
 
 cServer::cServer(boost::asio::io_context& io_context, short port)
-	: mAcceptor(io_context, tcp::endpoint(tcp::v4(), port)),
-	mSocket(io_context)
+	: mAcceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+	, mSocket(io_context)
 {
 	do_accept();
 }
@@ -25,9 +26,9 @@ void cServer::do_accept()
 		{
 			if (!ec)
 			{
-				std::cout << "on accept: \n";
-				std::cout << "  - local_endpoint: " << mSocket.local_endpoint()  << "\n";
-				std::cout << "  - remote_endpoint: " << mSocket.remote_endpoint() << "\n";
+				LOG_TRACE << "on accept: \n";
+				LOG_TRACE << "  - local_endpoint: " << mSocket.local_endpoint()  << "\n";
+				LOG_TRACE << "  - remote_endpoint: " << mSocket.remote_endpoint() << "\n";
 
 				std::make_shared<cSession>(std::move(mSocket))->start();
 			}

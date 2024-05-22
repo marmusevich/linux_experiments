@@ -1,3 +1,5 @@
+#include <span>
+
 #include "sharedLib/runOptions.h"
 #include "sharedLib/logger.h"
 
@@ -6,6 +8,8 @@
 
 int main(int argc, const char* argv[])
 {
+	const auto pOpt = NRunOptions::runOptions(std::span(argv, argc));
+
 	if (pOpt)
 	{
 		LOG << *pOpt << "\n";

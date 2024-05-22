@@ -17,8 +17,6 @@ find_package(Boost REQUIRED )
 if (Boost_FOUND)
    include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 endif ()
-##############################################################################
-
 
 ##############################################################################
 FILE(GLOB_RECURSE headers "include/*.h")
@@ -27,7 +25,16 @@ FILE(GLOB_RECURSE sources "src/*.cpp")
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}  FILES ${sources} ${headers})
 
 
+##############################################################################
 add_executable(server ${sources} ${headers})
+
+# Fix: error LNK2038: mismatch detected for 'boost_log_abi': value 'v2_mt_nt6' doesn't match value 'v2_mt_nt62'
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	target_compile_definitions(server 
+		PRIVATE
+			-D_WIN32_WINNT=0x0602
+	)
+endif()
 
 target_include_directories(server 
 	PRIVATE 

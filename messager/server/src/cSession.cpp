@@ -1,15 +1,15 @@
-#include <iostream>
-
 //#include <utility> //?
 
 #include <boost/asio/ts/buffer.hpp>
 
+#include "sharedLib/logger.h"
 
 #include "cSession.h"
 
 
 cSession::cSession(boost::asio::ip::tcp::socket socket)
 	: mSocket(std::move(socket))
+	, data_()
 {
 }
 
@@ -34,7 +34,7 @@ void cSession::do_read()
 
 void cSession::do_write(std::size_t length)
 {
-	std::cout << "[ " << mSocket.remote_endpoint() <<" ] (" << length << " bytes): " << std::string(data_, length) << "\n";
+	LOG << "[ " << mSocket.remote_endpoint() <<" ] (" << length << " bytes): " << std::string(data_, length) << "\n";
 
 	auto self(shared_from_this());
 	boost::asio::async_write(mSocket, boost::asio::buffer(data_, length),
