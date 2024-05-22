@@ -12,26 +12,20 @@
 #include <boost/asio.hpp>
 
 #include "sharedLib/logger.h"
+#include "sharedLib/runOptions.h"
 
 
 enum { max_length = 1024 };
 
-int main1(int argc, const char* argv[])
+int simple_client(const NRunOptions::sRunOptions& param)
 {
     try
     {
-        if (argc != 3)
-        {
-            std::cerr << "Usage: blocking_tcp_echo_client <host> <port>\n";
-            return 1;
-        }
-
         boost::asio::io_context io_context;
         boost::asio::ip::tcp::socket soced(io_context);
         boost::asio::ip::tcp::resolver resolver(io_context);
 
-        boost::asio::connect(soced, resolver.resolve(argv[1], argv[2]));
-        //boost::asio::connect(soced, resolver.resolve("localhost", "55000"));
+        boost::asio::connect(soced, resolver.resolve(param.addres, std::to_string(param.port)));
 
         while (true)
         {
@@ -57,7 +51,7 @@ int main1(int argc, const char* argv[])
 }
 
 
-int test()
+int test(const NRunOptions::sRunOptions& param)
 {
     LOG << "test server.... \n";
 
@@ -69,7 +63,7 @@ int test()
             boost::asio::ip::tcp::socket soced(io_context);
             boost::asio::ip::tcp::resolver resolver(io_context);
 
-            boost::asio::connect(soced, resolver.resolve("localhost", "55000"));
+            boost::asio::connect(soced, resolver.resolve(param.addres, std::to_string(param.port)));
 
             const char request[]{"Test request"};
             size_t request_length = std::strlen(request);
@@ -101,9 +95,21 @@ int main(int argc, const char* argv[])
     std::setlocale(LC_ALL, "ru_RU"); //optional - in my win machine instaled rus windows 64
 #endif // DEBUG
 
-    return test();
 
-    const char* fake_argv[] = { "main", "localhost", "55000" };
-    return main1(3, fake_argv);
+
+    const auto pOpt = NRunOptions::runOptions(std::span(argv, argc));
+    if (!pOpt)
+    {
+        LOG_WARNING << "NO OPT SET\n";
+        return -1;
+    }
+
+    LOG << "Try connect to: " << pOpt->addres << " : " << pOpt->port;
+
+
+
+    return test(*pOpt);
+
+    return simple_client(*pOpt);
 
 }

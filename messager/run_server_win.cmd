@@ -1,1 +1,1 @@
-Build\server\Debug\server.exe 55000
+Build\server\Debug\server.exe

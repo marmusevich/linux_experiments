@@ -1,11 +1,13 @@
 
 #include <clocale>//std::setlocale
 
-#include <iostream>
 
 #include <boost/asio/io_context.hpp>
 
 #include "cServer.h"
+
+#include "sharedLib/logger.h"
+#include "sharedLib/runOptions.h"
 
 
 
@@ -17,23 +19,25 @@ int main(int argc, const char* argv[])
 
     try
     {
-        if (argc != 2)
+        const auto pOpt = NRunOptions::runOptions(std::span(argv, argc));
+        if (!pOpt)
         {
-            std::cerr << "Usage: server <port>\n";
-            return 1;
+            LOG_WARNING << "NO OPT SET\n";
+            return -1;
         }
+
 
         boost::asio::io_context io_context;
 
-        cServer s(io_context, std::atoi(argv[1]));
+        cServer s(io_context, pOpt->port);
 
-        std::cout << "Started on " << argv[1] <<" port\n";
+        LOG << "Started on " << pOpt->port <<" port";
 
         io_context.run();
     }
     catch (std::exception& e)
     {
-        std::cerr << "Exception: " << e.what() << "\n";
+        LOG_ERROR << "Exception: " << e.what();
     }
 
     return 0;
