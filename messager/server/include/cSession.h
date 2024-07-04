@@ -20,5 +20,6 @@ private:
 
 
     enum { max_length = 1024 };
-    char data_[max_length];
+    uint8_t read_data[max_length];
+    uint8_t write_data[max_length];
 };
