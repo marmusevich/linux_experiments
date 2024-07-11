@@ -4,7 +4,7 @@
 #include <iostream>
 
 //------------------------------------------------------------------
-//Examples from 
+//Examples from https://theboostcpplibraries.com/boost.msm
 namespace NExample_1
 {
 	namespace msm = boost::msm;
@@ -54,6 +54,8 @@ namespace NExample_2
 			BOOST_MSM_EUML_STATE_NAME(On) & targetState) const
 		{
 			std::cout << "Switching on\n";
+			std::cout << *fsm.current_state() << '\n'; // NOTE: curent state is off, i.e. it is 'before' sweetch callback
+
 		}
 
 		template <class Event, class Fsm>
@@ -77,8 +79,14 @@ namespace NExample_2
 	void main()
 	{
 		msm::back::state_machine<light_state_machine> light;
+		std::cout << *light.current_state() << '\n';
+
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
+
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
+
 	}
 }
 
@@ -122,8 +130,11 @@ namespace NExample_3
 	void main()
 	{
 		msm::back::state_machine<light_state_machine> light;
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 	}
 }
 
@@ -137,7 +148,7 @@ namespace NExample_4
 		template <class Event, class Fsm, class State>
 		void operator()(const Event & ev, Fsm & fsm, State & state) const
 		{
-			std::cout << "Entering\n";
+			std::cout << "Entering  " << *fsm.current_state() << '\n';
 		}
 	};
 
@@ -146,7 +157,7 @@ namespace NExample_4
 		template <class Event, class Fsm, class State>
 		void operator()(const Event & ev, Fsm & fsm, State & state) const
 		{
-			std::cout << "Exiting\n";
+			std::cout << "Exiting  " << *fsm.current_state() << '\n';
 		}
 	};
 
@@ -167,8 +178,12 @@ namespace NExample_4
 	void main()
 	{
 		msm::back::state_machine<light_state_machine> light;
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
+
 	}
 }
 
@@ -213,11 +228,17 @@ namespace NExample_5
 	void main()
 	{
 		msm::back::state_machine<light_state_machine> light;
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 	}
 }
 
@@ -228,7 +249,7 @@ namespace NExample_6
 
 	BOOST_MSM_EUML_DECLARE_ATTRIBUTE(int, switched_on)
 
-		void write_message()
+	void write_message()
 	{
 		std::cout << "Switched on\n";
 	}
@@ -242,8 +263,7 @@ namespace NExample_6
 	BOOST_MSM_EUML_EVENT(press)
 
 	BOOST_MSM_EUML_TRANSITION_TABLE((
-		Off + press[fsm_(switched_on) < Int_<2>()] / (++fsm_(switched_on),
-			write_message_()) == On,
+		Off + press[fsm_(switched_on) < Int_<2>()] / (++fsm_(switched_on),	write_message_()) == On,
 		On + press == Off
 		), light_transition_table)
 
@@ -254,11 +274,17 @@ namespace NExample_6
 	void main()
 	{
 		msm::back::state_machine<light_state_machine> light;
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 		light.process_event(press);
+		std::cout << *light.current_state() << '\n';
 	}
 }
 
