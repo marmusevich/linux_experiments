@@ -308,6 +308,11 @@ namespace NExercises
 		   Nor can a tilted window be opened without closing it first. 
 		   Test your state machine by opening and tilting your window a couple of times. 
 		   Use current_state() to write states to standard output.
+
+        2. Extend the state machine: The window should be part of a smart home. 
+		   The state machine should now count how often the window was opened and tilted. 
+		   To test your state machine open and tilt your window a couple of times. 
+		   At the end of your program write to standard output how often the window was opened and how often it was tilted.
 	*/
 
 	namespace msm = boost::msm;
@@ -323,17 +328,21 @@ namespace NExercises
 	BOOST_MSM_EUML_EVENT(wa_open)
 	BOOST_MSM_EUML_EVENT(wa_tilt)
 
+	//attrs counts - ac
+	BOOST_MSM_EUML_DECLARE_ATTRIBUTE(int, ac_opened)
+	BOOST_MSM_EUML_DECLARE_ATTRIBUTE(int, ac_tilted)
+
 	BOOST_MSM_EUML_TRANSITION_TABLE((
-		ws_closed + wa_open == ws_opened,
+		ws_closed + wa_open / (++fsm_(ac_opened)) == ws_opened,
 		ws_opened + wa_close == ws_closed,
-		ws_closed + wa_tilt == ws_tilted,
+		ws_closed + wa_tilt / (++fsm_(ac_tilted)) == ws_tilted,
 		ws_tilted + wa_close == ws_closed
 		), window_transition_table)
 
 	BOOST_MSM_EUML_DECLARE_STATE_MACHINE(
-		(window_transition_table, init_ << ws_closed),
+		(window_transition_table, init_ << ws_closed, no_action, no_action, 
+			attributes_ << ac_opened << ac_tilted),
 		window_state_machine)
-
 
 	std::string getStateName(int stateId) 
 	{
@@ -376,6 +385,8 @@ while (false)
 		DO_CASE(wa_tilt);
 		DO_CASE(wa_close);
 
+		std::cout << "counts of 'opened' = "  << fsmWindow.get_attribute(ac_opened) << "\n";
+		std::cout << "counts of 'tilted' = " << fsmWindow.get_attribute(ac_tilted) << "\n";
 
 		std::cout << "--- TRY tilt opened  ---\n";
 		DO_CASE(wa_close);
@@ -383,11 +394,18 @@ while (false)
 		DO_CASE(wa_tilt);
 		DO_CASE(wa_close);
 
+		std::cout << "counts of 'opened' = " << fsmWindow.get_attribute(ac_opened) << "\n";
+		std::cout << "counts of 'tilted' = " << fsmWindow.get_attribute(ac_tilted) << "\n";
+
 		std::cout << "--- TRY open tilted  ---\n";
 		DO_CASE(wa_close);
 		DO_CASE(wa_tilt);
 		DO_CASE(wa_open);
 		DO_CASE(wa_close);
+
+		std::cout << "counts of 'opened' = " << fsmWindow.get_attribute(ac_opened) << "\n";
+		std::cout << "counts of 'tilted' = " << fsmWindow.get_attribute(ac_tilted) << "\n";
+
 	}
 
 
