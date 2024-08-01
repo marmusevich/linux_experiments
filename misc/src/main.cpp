@@ -6,6 +6,8 @@
 //---
 //#include <iostream>
 
+
+void co_main();
 void stl_perfomance();
 
 void fsm_main();
@@ -15,7 +17,8 @@ void tq_main();
 
 int main(int argc, const char* argv[])
 {
-	stl_perfomance();
+	co_main();
+	//stl_perfomance();
 	//fsm_main();
 	//cv_main();
 	//tq_main();
